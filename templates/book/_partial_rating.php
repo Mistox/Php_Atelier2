@@ -1,3 +1,9 @@
+<?php
+
+use App\Entity\User;
+
+?>
+
 <div class="card">
     <div class="card-body p-4">
 
@@ -25,23 +31,17 @@
                         </div>
                         <div class="col-8">
                             <div class="rate enabled">
-                                <input type="radio" id="star5" name="rate" value="5" checked="checked">
-                                <label for="star5" title="5 étoiles">5 étoiles</label>
-                                <input type="radio" id="star4" name="rate" value="4">
-                                <label for="star4" title="4 étoiles">4 étoiles</label>
-                                <input type="radio" id="star3" name="rate" value="3">
-                                <label for="star3" title="3 étoiles">3 étoiles</label>
-                                <input type="radio" id="star2" name="rate" value="2">
-                                <label for="star2" title="2 étoiles">2 étoiles</label>
-                                <input type="radio" id="star1" name="rate" value="1">
-                                <label for="star1" title="1 étoiles">1 étoiles</label>
+                                <?php for ($i = 5; $i >= 1; $i--) : ?>
+                                    <input type="radio" id="star<?= $i; ?>" name="rate" value="<?= $i; ?>" <?= ($i == htmlspecialchars($rating->getRate())) ? 'checked="checked"' : ($i == 5 ? 'checked="checked"' : ''); ?>>
+                                    <label for="star<?= $i; ?>" title="<?= $i; ?> étoiles"><?= $i; ?> étoiles</label>
+                                <?php endfor; ?>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <input type="hidden" name="book_id" value="82">
-                <input type="hidden" name="user_id" value="2">
+                <input type="hidden" name="book_id" value="<?= htmlspecialchars($book->getId()); ?>">
+                <input type="hidden" name="user_id" value="<?= htmlspecialchars(User::getCurrentUserId())?>">
 
                 <input type="hidden" name="id" value="8">
 

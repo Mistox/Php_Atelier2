@@ -71,20 +71,44 @@ class BookController extends Controller
                     $ratingRepository = new RatingRepository();
                     //@todo Créer une nouvelle instance de commentaire en settant le book id et l'id de l'utilisateur connecté (User::getCurrentUserId())
                     // $comment
+                    $comment = new Comment();
+                    $comment->setBookId($book->getId());
+                    $comment->setUserId(User::getCurrentUserId());
 
-
+                    $rating = new Rating();
+                    $rating = $ratingRepository->findOneByBookIdAndUserId($book->getId(), User::getCurrentUserId());
                     if (isset($_POST['saveComment'])) {
                         if (!User::isLogged()) {
                             throw new \Exception("Accès refusé");
                         }
                         //@todo appeler la méthode hydrate du l'objet comment en passant le tableau $_POST
-
+                        $comment->hydrate($_POST);
                         //@todo verifier que le commentaire est valide en appelant la commande validate
+                        $errors = $comment->validate();
 
                         
                         if (empty($errors)) {
                             // @todo si il n'y a pas d'erreur, alors appeler la méthode persist de l'objet commentRepository en passant $comment
-                            
+                            $comment = $commentRepository->persist($comment);
+                        }
+                    }
+
+                    if (isset($_POST['saveRating'])) {
+                        if (!User::isLogged()) {
+                            throw new \Exception("Accès refusé");
+                        }
+                        $rating->setRate($_POST['rate']);
+                        $rating->setCreatedAt(new \DateTime());
+
+                        $rating->hydrate($_POST);
+
+                        $errors = $rating->validate();
+
+                        if (empty($errors)) {
+                            $isCreated = $ratingRepository->persist($rating);
+                            if (!$isCreated) {
+                                $errors['rate'] = 'Une erreur est survenue lors de l\'enregistrement de votre note';
+                            }
                         }
                     }
 
@@ -97,7 +121,7 @@ class BookController extends Controller
                         'book' => $book,
                         'comments' => $comments,
                         'newComment' => '',
-                        'rating' => '',
+                        'rating' => $rating,
                         'averageRate' => $averageRate,
                         'errors' => '',
                     ]);
@@ -168,10 +192,10 @@ class BookController extends Controller
 
             if (isset($_POST['saveBook'])) {
                 //@todo envoyer les données post à la méthode hydrate de l'objet $book
-                
+                $book->hydrate($_POST);
 
                 //@todo appeler la méthode validate de l'objet book pour récupérer les erreurs (titre vide)
-                
+                $errors = $book->validate();                
 
                 // Si pas d'erreur on peut traiter l'upload de fichier
                 if (empty($errors)) {
@@ -179,23 +203,29 @@ class BookController extends Controller
                     // On lance l'upload de fichier
                     if (isset($_FILES['file']['tmp_name']) && $_FILES['file']['tmp_name'] !== '') {
                         //@todo appeler la méthode static uploadImage de la classe FileTools et stocker le résultat dans $res
-                        
+                        $res = FileTools::uploadImage($_FILES['file'], _BOOKS_IMAGES_FOLDER_);
                         if (empty($res['errors'])) {
-                            //@todo décommenter cette ligne
-                            //$book->setImage($res['fileName']);
+                            // @todo décommenter cette ligne
+                            $book->setImage($res['fileName']);
                         } else {
                             $fileErrors = $res['errors'];
                         }
                     }
                     if (empty($fileErrors)) {
                         // @todo si pas d'erreur alors on appelle persit de bookRepository en passant $book
-
+                        $book = $bookRepository->persist($book);
 
                         // @todo On redirige vers la page du livre (avec header location)
-                        
+                        header('location: index.php?controller=book&action=show&id=' . $book->getId() . '&alert=edit_confirm');
                     } else {
                         $errors = array_merge($errors, $fileErrors);
                     }
+                }
+            } else {
+                // Si on est en mode édition, on hydrate le livre avec les données de la base
+                if (!is_null($id)) {
+                    $book = $bookRepository->findOneById($id);
+
                 }
             }
 

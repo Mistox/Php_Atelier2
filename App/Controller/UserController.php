@@ -38,15 +38,27 @@ class UserController extends Controller
         try {
             $errors = [];
             $user = new User();
+            $user->setRole('user');
 
             if (isset($_POST['saveUser'])) {
                 //@todo gérer l'inscription utilisateur
+                $userRepository = new UserRepository();
+                $user->hydrate($_POST);
+                $errors = $user->validate();
+
+                if (empty($errors)) {
+                    $isCreated = $userRepository->persist($user);
+                    if ($isCreated) {
+                        header('Location: /index.php?controller=auth&action=login');
+                    }
+                }
+
             }
 
             $this->render('user/add_edit', [
-                'user' => '',
+                'user' => $user,
                 'pageTitle' => 'Inscription',
-                'errors' => ''
+                'errors' => $errors
             ]);
 
         } catch (\Exception $e) {

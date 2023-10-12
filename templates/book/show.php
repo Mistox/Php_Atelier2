@@ -18,8 +18,8 @@ require_once _TEMPLATEPATH_ . '/header.php';
         <?php if (User::isLogged() && User::isAdmin()) { ?>
             <div class="card mb-3">
                 <div class="card-body p-4">
-                    <a href="index.php?controller=book&action=edit&id=<?= htmlspecialchars($book->getDescription()); ?>" class="btn btn-primary">Modifier</a>
-                    <a href="index.php?controller=book&action=delete&id=<?= htmlspecialchars($book->getDescription()); ?>" class="btn btn-primary">Supprimer</a>
+                    <a href="index.php?controller=book&action=edit&id=<?= htmlspecialchars($book->getId()); ?>" class="btn btn-primary">Modifier</a>
+                    <a href="index.php?controller=book&action=delete&id=<?= htmlspecialchars($book->getId()); ?>" class="btn btn-primary">Supprimer</a>
 
                 </div>
             </div>

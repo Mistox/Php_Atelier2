@@ -3,8 +3,8 @@
         <div class="card-body p-4">
             <h2>Commentaires</h2>
             <div class="row">
-                <?php foreach ($comments as $comment) : ?>
                     <div class="col">
+                        <?php foreach ($comments as $comment) : ?>
                         <div class="d-flex flex-start bg-body-tertiary p-2 my-1">
 
                             <div class="flex-grow-1 flex-shrink-1">
@@ -17,12 +17,13 @@
                                         </p>
                                     </div>
                                     <p class="small mb-0">
-                                        <?= htmlspecialchars($comment->getComment()); ?> </p>
+                                        <?= htmlspecialchars($comment->getComment()); ?> 
+                                    </p>
                                 </div>
                             </div>
                         </div>
+                         <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
             </div>
 
             <form method="POST">
