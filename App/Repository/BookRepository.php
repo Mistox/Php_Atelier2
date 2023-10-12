@@ -36,13 +36,39 @@ class BookRepository extends Repository
     public function findAll(int $limit = null, int $page = null): array
     {
         //@todo commencer par une requête simple puis gérer la pagination
-        
+        if($limit !== null && $page !== null){
+            $offset = $limit * ($page - 1);
+            $query = $this->pdo->prepare('SELECT * FROM book ORDER BY id DESC LIMIT :limit OFFSET :offset');
+            $query->bindValue(':limit', $limit, $this->pdo::PARAM_INT);
+            $query->bindValue(':offset', $offset, $this->pdo::PARAM_INT);
+        }
+        else if($limit !== null){
+            $query = $this->pdo->prepare('SELECT * FROM book ORDER BY id DESC LIMIT :limit');
+            $query->bindValue(':limit', $limit, $this->pdo::PARAM_INT);
+        }
+        else{
+            $query = $this->pdo->prepare('SELECT * FROM book ORDER BY id DESC');
+        }
 
         $booksArray = [];
-
-        //@todo faire une boucle sur le tableau de livre pour hydrater et stocker les objets livres avec Book::createAndHydrate
-    
         
+        //@todo faire une boucle sur le tableau de livre pour hydrater et stocker les objets livres avec Book::createAndHydrate
+        $query->execute();
+        $books = $query->fetchAll($this->pdo::FETCH_ASSOC);
+        foreach ($books as $book) {
+            $book = Book::createAndHydrate($book);
+            // On rajoute auteur
+            $authorRepository = new AuthorRepository();
+            $author =  $authorRepository->findOneById($book->getAuthorId());
+            $book->setAuthor($author);
+
+            // On rajoute type
+            $typeRepository = new TypeRepository();
+            $type =  $typeRepository->findOneById($book->getTypeId());
+            $book->setType($type);
+
+            $booksArray[] = $book;
+        }
 
         return $booksArray;
     }

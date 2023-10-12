@@ -67,6 +67,8 @@ class BookController extends Controller
 
                 if ($book) {
                     //@todo créer une nouvelle instance de CommentRepository
+                    $commentRepository = new CommentRepository();
+                    $ratingRepository = new RatingRepository();
                     //@todo Créer une nouvelle instance de commentaire en settant le book id et l'id de l'utilisateur connecté (User::getCurrentUserId())
                     // $comment
 
@@ -87,15 +89,16 @@ class BookController extends Controller
                     }
 
                     // @todo récupérer les commentaires existants
-                    
+                    $comments = $commentRepository->findAllByBookId($book->getId());
+                    $averageRate = $ratingRepository->findAverageByBookId($book->getId());
 
                     //@todo remplacer petit à petit les valeurs 
                     $this->render('book/show', [
                         'book' => $book,
-                        'comments' => '',
+                        'comments' => $comments,
                         'newComment' => '',
                         'rating' => '',
-                        'averageRate' => '',
+                        'averageRate' => $averageRate,
                         'errors' => '',
                     ]);
                 } else {
@@ -155,9 +158,12 @@ class BookController extends Controller
             }
 
             // @todo Récupération des types
-            
+            $typeRepository = new TypeRepository();
+            $types = $typeRepository->findAll();
 
             // @todo Récupération des auteurs
+            $authorRepository = new AuthorRepository();
+            $authors = $authorRepository->findAll();
         
 
             if (isset($_POST['saveBook'])) {
@@ -195,8 +201,8 @@ class BookController extends Controller
 
             $this->render('book/add_edit', [
                 'book' => $book,
-                'types' => '',
-                'authors' => '',
+                'types' => $types,
+                'authors' => $authors,
                 'pageTitle' => 'Ajouter un livre',
                 'errors' => ''
             ]);
@@ -220,16 +226,19 @@ class BookController extends Controller
         }
 
         //@todo récupérer les tous les livres (avec pagination plus tard)
+        $books = $bookRepository->findAll(_ITEM_PER_PAGE_, $page);
 
         //@todo pour la pagination, on a besoin de connaitre le nombre total de livres
+        $totalBooks = $bookRepository->count();
 
         //@todo pour la pagination on a besoin de connaitre le nombre de pages
+        $totalPages = ceil($totalBooks / _ITEM_PER_PAGE_);
 
 
         $this->render('book/list', [
-            'books' => '',
-            'totalPages' => '',
-            'page' => '',
+            'books' => $books,
+            'totalPages' => $totalPages,
+            'page' => $page,
         ]);
     }
 

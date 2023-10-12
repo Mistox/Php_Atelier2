@@ -3,25 +3,26 @@
         <div class="card-body p-4">
             <h2>Commentaires</h2>
             <div class="row">
-                <div class="col">
-                    <div class="d-flex flex-start bg-body-tertiary p-2 my-1">
+                <?php foreach ($comments as $comment) : ?>
+                    <div class="col">
+                        <div class="d-flex flex-start bg-body-tertiary p-2 my-1">
 
-                        <div class="flex-grow-1 flex-shrink-1">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p class="mb-1">
-                                        <span class="small">
-                                            John - Le 20/09/2023 à 13:41:21 </span>
-                                    </p>
+                            <div class="flex-grow-1 flex-shrink-1">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-1">
+                                            <span class="small">
+                                                <?= htmlspecialchars($comment->getUser()->getFirstName()) . " -  Le " . htmlspecialchars($comment->getCreatedAt()->format('d/m/Y à H:i:s')) ?>    
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <p class="small mb-0">
+                                        <?= htmlspecialchars($comment->getComment()); ?> </p>
                                 </div>
-                                <p class="small mb-0">
-                                    J'ai adoré cette BD ! Il faut vraiment tester ça ! </p>
                             </div>
                         </div>
                     </div>
-
-
-                </div>
+                <?php endforeach; ?>
             </div>
 
             <form method="POST">

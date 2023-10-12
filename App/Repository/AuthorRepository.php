@@ -26,7 +26,13 @@ class AuthorRepository extends Repository
     {
         $authorsArray = [];
         //@todo coder cette partie
-
+        $query = $this->pdo->prepare('SELECT * FROM author ORDER BY id DESC');
+        $query->execute();
+        $authors = $query->fetchAll($this->pdo::FETCH_ASSOC);
+        foreach ($authors as $author) {
+            $author = Author::createAndHydrate($author);
+            $authorsArray[] = $author;
+        }
 
         return $authorsArray;
     }

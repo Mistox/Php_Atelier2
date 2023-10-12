@@ -1,4 +1,4 @@
-<?php require_once _TEMPLATEPATH_ . '\header.php';
+<?php require_once _TEMPLATEPATH_ . '/header.php';
 /** @var \App\Entity\User $user */
 ?>
 
@@ -28,4 +28,4 @@
 </form>
 
 
-<?php require_once _TEMPLATEPATH_ . '\footer.php'; ?>
+<?php require_once _TEMPLATEPATH_ . '/footer.php'; ?>

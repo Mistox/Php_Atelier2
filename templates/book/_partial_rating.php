@@ -5,16 +5,10 @@
             <h2>Note des utilisateurs</h2>
             <div class="row align-items-center justify-content-center">
                 <div class="rate col-6">
-                    <input disabled="disabled" type="radio" id="avgstar5" name="avgrate" value="5">
-                    <label for="avgstar5" title="5 étoiles">5 étoiles</label>
-                    <input disabled="disabled" type="radio" id="avgstar4" name="avgrate" value="4" checked="checked">
-                    <label for="avgstar4" title="4 étoiles">4 étoiles</label>
-                    <input disabled="disabled" type="radio" id="avgstar3" name="avgrate" value="3">
-                    <label for="avgstar3" title="3 étoiles">3 étoiles</label>
-                    <input disabled="disabled" type="radio" id="avgstar2" name="avgrate" value="2">
-                    <label for="avgstar2" title="2 étoiles">2 étoiles</label>
-                    <input disabled="disabled" type="radio" id="avgstar1" name="avgrate" value="1">
-                    <label for="avgstar1" title="1 étoiles">1 étoiles</label>
+                    <?php for ($i = 5; $i >= 1; $i--) : ?>
+                        <input disabled="disabled" type="radio" id="avgstar<?= $i; ?>" name="averageRate" value="<?= $i; ?>" <?= $i == $averageRate ? 'checked="checked"' : ''; ?>>
+                        <label for="$averageRate<?= $i; ?>" title="<?= $i; ?> étoiles"><?= $i; ?> étoiles</label>
+                    <?php endfor; ?>
                 </div>
             </div>
         </div>

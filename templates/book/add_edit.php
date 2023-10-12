@@ -1,4 +1,4 @@
-<?php require_once _TEMPLATEPATH_ . '\header.php'; ?>
+<?php require_once _TEMPLATEPATH_ . '/header.php'; ?>
 
 <h1><?= $pageTitle; ?></h1>
 
@@ -17,9 +17,9 @@
     <div class="mb-3">
         <label for="type" class="form-label">Type</label>
         <select name="type_id" id="type" class="form-select">
-            <option value="1">livre</option>
-            <option value="2">manga</option>
-            <option value="3">bande dessinée</option>
+            <?php foreach($types as $type) : ?>
+                <option value="<?= htmlspecialchars($type->getId()); ?>"><?= htmlspecialchars($type->getName()); ?></option>
+            <?php endforeach; ?>
         </select>
     </div>
 
@@ -27,9 +27,9 @@
     <div class="mb-3">
         <label for="author" class="form-label">Auteur</label>
         <select name="author_id" id="author" class="form-select">
-            <option value="5">Caro Fabrice</option>
-            <option value="4">Ito Junji</option>
-            <option value="3">Orwell George</option>
+            <?php foreach($authors as $author) : ?>
+                <option value="<?= htmlspecialchars($author->getId()); ?>"><?= htmlspecialchars($author->getLastName() . " " . $author->getFirstName()); ?></option>
+            <?php endforeach; ?>
         </select>
     </div>
 
@@ -44,4 +44,4 @@
 </form>
 
 
-<?php require_once _TEMPLATEPATH_ . '\footer.php'; ?>
+<?php require_once _TEMPLATEPATH_ . '/footer.php'; ?>
